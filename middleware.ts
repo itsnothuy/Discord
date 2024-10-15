@@ -4,16 +4,16 @@ export default clerkMiddleware()
 
 // middleware.ts in the root of your project
 
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+// import { NextResponse } from 'next/server';
+// import type { NextRequest } from 'next/server';
 
-export function middleware(req: NextRequest) {
-    // Example: redirecting from /old-path to /new-path
-    if (req.nextUrl.pathname === '/old-path') {
-        return NextResponse.redirect(new URL('/new-path', req.url));
-    }
-    return NextResponse.next();
-}
+// export function middleware(req: NextRequest) {
+//     // Example: redirecting from /old-path to /new-path
+//     if (req.nextUrl.pathname === '/old-path') {
+//         return NextResponse.redirect(new URL('/new-path', req.url));
+//     }
+//     return NextResponse.next();
+// }
 
 
 export const config = {
@@ -23,5 +23,4 @@ export const config = {
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],
-};
-
+}
