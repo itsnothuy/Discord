@@ -1,6 +1,7 @@
 import { initialProfile } from "@/lib/initial-profile";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
+import { InitialModal } from "@/components/modals/initial-modal";
 
 // Type guard to check if the profile has an 'id'
 function isProfileWithId(profile: any): profile is { id: string } {
@@ -11,11 +12,13 @@ const SetupPage = async () => {
     const profile = await initialProfile();
 
     if (!isProfileWithId(profile)) {
-        return (
-            <div>
-                Error: Profile is not valid or does not have an ID.
-            </div>
-        );
+        // return (
+        //     <div>
+        //         Error: Profile is not valid or does not have an ID.
+        //     </div>
+        // );
+        return <InitialModal />;
+
     }
 
     const server = await db.server.findFirst({
@@ -32,11 +35,7 @@ const SetupPage = async () => {
         return redirect(`/servers/${server.id}`);
     }
 
-    return (
-        <div>
-            Create a Server
-        </div>
-     );
+    return <InitialModal />;
 }
  
 export default SetupPage;
