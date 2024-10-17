@@ -58,5 +58,5 @@ export const NavigationSidebar = async () => {
                 />
             </div>
         </div>
-    )
+    );
 }
