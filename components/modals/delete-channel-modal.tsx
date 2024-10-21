@@ -10,33 +10,40 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
-import { Check, Copy, RefreshCw } from "lucide-react";
-import { useOrigin } from "@/hooks/use-origin";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import qs from "query-string";
 
-export function DeleteServerModal() {
+export function DeleteChannelModal() {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();
 
-    const isModalOpen = isOpen && type === "deleteServer";
-    const { server } = data;
-
+    const isModalOpen = isOpen && type === "deleteChannel";
+    const { server, channel } = data || {}; 
+    
     const [isLoading, setIsLoading] = useState(false);
     const onClick = async () => {
         try {
             setIsLoading(true);
+            const url = qs.stringifyUrl({
+                url: `/api/channels/${channel?.id}`,
+                query:  {
+                    serverId: server?.id,
+                }
+            })
 
-            await axios.delete(`/api/servers/${server?.id}`);
+            await axios.delete(url);
+            
+            await router.push(`/servers/${server?.id}`);
+            
+            await router.refresh();
+
             onClose();
-            router.refresh();
-            router.push("/");
         } catch (error) {
             console.log(error);
+            alert("Something went wrong while deleting the channel.");
         } finally {
             setIsLoading(false);
         }
@@ -47,14 +54,14 @@ export function DeleteServerModal() {
             <DialogContent className="bg-white text-black p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Delete Server
+                        Delete Channel
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
                         Are you sure you want to do this?  <br /> 
                         <span
                             className="font-semibold text-indigo-500"
                         >
-                            {server?.name} 
+                            #{channel?.name} 
                         </span> will be permanently deleted.
                     </DialogDescription>
                 </DialogHeader>
@@ -72,7 +79,7 @@ export function DeleteServerModal() {
                             variant="primary"
                             onClick={onClick}
                         >
-                            Confirm
+                            {isLoading ? "Deleting..." : "Confirm"}
                         </Button>
                     </div>
 
