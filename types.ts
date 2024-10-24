@@ -15,4 +15,4 @@ export type NextApiResponseServerIo = NextApiResponse & {
             io: SocketIOServer;
         }
     }
-}
+} 
