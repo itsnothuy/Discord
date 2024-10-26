@@ -13,6 +13,9 @@ import { Plus, Smile } from "lucide-react";
 import { Input } from "../ui/input";
 import axios from "axios";
 import { useModal } from "@/hooks/use-modal-store";
+import { EmojiPicker } from "../emoji-picker";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 
 interface ChatInputProps {
@@ -34,6 +37,9 @@ export const ChatInput = ({
     type,
 }: ChatInputProps) => {
     const { onOpen } = useModal();
+    const router = useRouter();
+    const [refreshTrigger, setRefreshTrigger] = useState(false);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -51,10 +57,18 @@ export const ChatInput = ({
             });
 
             await axios.post(url, values);
+            form.reset({ content: "" }); 
+            setRefreshTrigger(!refreshTrigger);
         } catch (error) {
             console.log(error);
         }
     };
+
+    useEffect(() => {
+        // Trigger a router refresh when refreshTrigger changes
+        router.refresh();
+    }, [refreshTrigger, router]);
+
 
     return (
         <Form {...form}>
@@ -80,10 +94,14 @@ export const ChatInput = ({
                                         focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
                                         placeholder={`Message ${type === "conversation" ? name : "#" + name}`}
                                         {...field}
+                                        value={field.value} // Explicitly bind value
+                                        onChange={(e) => field.onChange(e.target.value)}
                                     />
 
                                     <div className="absolute top-7 right-8">
-                                        <Smile />
+                                        <EmojiPicker
+                                            onChange={(emoji: string) => field.onChange(`${field.value} ${emoji}`)}
+                                        />
                                     </div>
 
                                 </div>
