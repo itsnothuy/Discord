@@ -184,12 +184,14 @@ export default async function handler(
         });
 
         const channelKey = `chat:${channelId}:messages`;
+        
+        res?.socket?.server?.io?.emit(channelKey, message);
 
         // Send response before emitting socket event to avoid blocking the response
         res.status(200).json({ message: "Message created successfully" });
 
         // Emit the message via socket.io after sending the response
-        res.socket.server.io?.emit(channelKey, message);
+        
         
     } catch (error) {
         console.error("[MESSAGES_POST]", error);
