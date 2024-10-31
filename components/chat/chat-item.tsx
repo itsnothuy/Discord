@@ -108,6 +108,15 @@ export const ChatItem = ({
             console.error(error);
         }
     };
+
+    const params = useParams();
+    const router = useRouter();
+
+    const onMemberClick = () => {
+        if (member.id === currentMember.id) return;
+    
+        router.push(`/servers/${params?.serverId}/conversations/${member.id}`);
+    };
     
 
     const isLoading = form.formState.isSubmitting;
@@ -127,7 +136,10 @@ export const ChatItem = ({
     return (
         <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
             <div className="group flex gap-x-2 items-center w-full">
-                <div className="cursor-pointer hover:drop-shadow-md transition">
+                <div 
+                    onClick={onMemberClick}
+                    className="cursor-pointer hover:drop-shadow-md transition"
+                >
                     <UserAvatar src={member.profile.imageUrl} />
                 </div>
                 <div className="flex flex-col w-full">
